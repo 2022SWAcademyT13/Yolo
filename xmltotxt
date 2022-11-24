@@ -1,0 +1,70 @@
+from bs4 import BeautifulSoup
+
+#Xml은 xml파일 디렉토리, Txt는 텍스트 파일 넣을 폴더
+#ex) Xml = './Bbox_1_new/Bbox_0001/0617_01.xml'
+#ex) Txt = './labels'
+def xmltotxt(Xml, Txt):
+c
+#Beautifulsoup으로 xml 파싱
+    data = open(
+                        Xml,
+                        'r',
+                        encoding='utf-8'
+                    ).read()
+    dom = BeautifulSoup(data, features='xml')
+
+#image를 하나씩 찾아서 텍스트 파일 작성
+    for a in dom.select('image'): 
+        width = float(a.get('width'))
+        height = float(a.get('height'))
+        name = a.get('name')[0:-4]
+        f = open(Txt + "/%s.txt"%name, 'w')
+        for b in a.findChildren():
+            label = lblist.index(b.get('label'))
+            xtl = float(b.get('xtl'))
+            ytl = float(b.get('ytl'))
+            xbr = float(b.get('xbr'))
+            ybr = float(b.get('ybr'))
+
+            xc = .5*(xtl + xbr)/width
+            yc = .5*(ytl + ybr)/height
+            w= (xbr - xtl)/width
+            h = (ybr - ytl)/height
+
+            data = "%d %f %f %f %f\n"%(label, xc, yc, w, h)
+            f.write(data)
+        f.close()
+
+#라벨리스트, 안적어놓으면 작동 안함
+lblist = ['barricade',
+ 'bench',
+ 'bicycle',
+ 'bollard',
+ 'bus',
+ 'car',
+ 'carrier',
+ 'cat',
+ 'chair',
+ 'dog',
+ 'fire_hydrant',
+ 'kiosk',
+ 'motorcycle',
+ 'movable_signage',
+ 'parking_meter',
+ 'person',
+ 'pole',
+ 'potted_plant',
+ 'power_controller',
+ 'scooter',
+ 'stop',
+ 'stroller',
+ 'table',
+ 'traffic_light',
+ 'traffic_light_controller',
+ 'traffic_sign',
+ 'tree_trunk',
+ 'truck',
+ 'wheelchair']
+
+#실행
+#xmltotxt(xml 위치, 폴더 위치)
